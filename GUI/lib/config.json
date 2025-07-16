@@ -1,0 +1,1 @@
+{"printer_port": "COM4", "weight_port": "COM5", "plc_ip": "192.168.0.97", "min_weight": 0.0, "max_weight": 2000.0, "min_length": 0.0, "max_length": 100000.0}
