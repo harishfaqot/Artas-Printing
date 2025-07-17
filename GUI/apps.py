@@ -62,7 +62,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.comboBox_weight.setCurrentText("pound (lbs)")
         self.comboBox_length.setCurrentText("foot (ft)")
 
-        self.lineEdit_input.setText("1ST API 5CT-2221 LOGO 05-25 PE 7 26-00 K S P 4600 PSI D   {LENGTH} {WEIGHT} HN  241B11000-1  WO 04-0475")
+        self.lineEdit_input.setText("1ST API SPEC 5CT-2221     05-25 PE 7 26.00 K S P 4600 PSI D   {LENGTH} {WEIGHT} HN  241B11000-1  WO 04-0475")
         self.update_output()
 
         # Setup table columns
@@ -275,6 +275,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
                 self.config["printer_port"] = port
                 self.save_config()
+                self.EMARK.clear_text()
             else:
                 QMessageBox.critical(self, "Connection Failed", msg)
     
@@ -372,6 +373,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         if not self.weight_limits_set or not self.length_limits_set:
             QMessageBox.warning(self, "Limits Not Set", "Please set both weight and length limits first")
             return
+        
 
     def get_weight(self):
             weight = round(self.WEIGHT.read_weight(), 2)
@@ -386,6 +388,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
             weight_upper = float(self.lineEdit_uplimit.text())
             length_lower = float(self.lineEdit_downlimit_1.text())
             length_upper = float(self.lineEdit_uplimit_1.text())
+
+            # self.get_weight()
+            # self.get_length()
 
             weight = round(float(self.lineEdit_weight.text()),2)
             length = round(float(self.lineEdit_length.text()),2)
@@ -424,7 +429,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 print(output_text)
                 response = self.EMARK.send_text(output_text, 
                                         template_num=1, 
-                                        font_height=0x10,  # 16 dot matrix
+                                        font_height=0x0C,  # 16 dot matrix
                                         x_pos=0, 
                                         y_pos=0)
                 print(f"Response: {response.hex()}")

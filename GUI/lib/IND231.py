@@ -54,7 +54,7 @@ class WeightReader:
             else:
                 print(f"Unknown response: {response}")
 
-            return response
+            # return response
 
         except serial.SerialException as e:
             print(f"Serial error: {e}")
@@ -71,7 +71,7 @@ class WeightReader:
 # Example usage:
 if __name__ == "__main__":
     scale = WeightReader()
-    scale.connect(port = 'COM5')
+    scale.connect(port = 'COM6')
     while True:
         print(scale.read_weight())
 
