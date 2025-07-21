@@ -1,5 +1,6 @@
 import serial
 import time
+import random
 
 class WeightReader:
     def __init__(self):
@@ -7,7 +8,7 @@ class WeightReader:
 
     def connect(self, port, baudrate=9600):
         try:
-            self.ser = serial.Serial(
+            self.serial = serial.Serial(
                 port=port,
                 baudrate=baudrate,
                 bytesize=serial.EIGHTBITS,
@@ -19,19 +20,19 @@ class WeightReader:
             self.connected = True
         except serial.SerialException as e:
             print(f"Failed to open serial port {port}: {e}")
-            self.ser = None
+            self.serial = None
             self.connected = False
             return f"Could not connect to device.\nPlease check the port or connection.\nError: {e}"
 
     def read_weight(self):
-        if not self.ser or not self.ser.is_open:
+        if not hasattr(self, 'serial'):
             print("Serial port not available.")
-            return None
+            return random.uniform(0, 1000) 
 
         try:
-            self.ser.flushInput()
-            self.ser.write(b'SI\r\n')  # Send SI command
-            response = self.ser.readline().decode('utf-8').strip()
+            self.serial.flushInput()
+            self.serial.write(b'SI\r\n')  # Send SI command
+            response = self.serial.readline().decode('utf-8').strip()
             print(f"Raw response: {response}")
 
             if response.startswith("S S") or response.startswith("S D"):
@@ -63,8 +64,8 @@ class WeightReader:
 
 
     def close(self):
-        if self.ser and self.ser.is_open:
-            self.ser.close()
+        if self.serial and self.serial.is_open:
+            self.serial.close()
             print("Serial port closed.")
             self.connected = False
 

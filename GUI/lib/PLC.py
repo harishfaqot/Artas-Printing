@@ -1,5 +1,6 @@
 import snap7
-from snap7.util import get_real
+from snap7.util import get_bool, get_real
+from snap7.types import Areas
 
 class PLCReader:
     def __init__(self):
@@ -32,6 +33,19 @@ class PLCReader:
         except Exception as e:
             print(f"Read error: {e}")
             return None
+    
+    def read_bit(self, byte, bit):
+        if not self.client or not self.client.get_connected():
+            print("Not connected to PLC.")
+            return None
+        try:
+            data = self.client.read_area(Areas.PE, 0, byte, 1)
+            value = get_bool(data, 0, bit)
+            print(f"Value at Byte {byte}.{bit}:", value)
+            return value
+        except Exception as e:
+            print(f"Read error: {e}")
+            return None
 
     def close(self):
         if self.client and self.client.get_connected():
@@ -42,6 +56,6 @@ class PLCReader:
 # Example usage
 if __name__ == "__main__":
     plc = PLCReader()
-    plc.connect(ip='192.168.0.97')
+    plc.connect(ip='192.168.1.6')
     plc.read_real(db_number=2, start_byte=0)
     plc.close()

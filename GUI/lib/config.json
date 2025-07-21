@@ -1,1 +1,1 @@
-{"printer_port": "COM4", "weight_port": "COM6", "plc_ip": "192.168.0.97", "min_weight": 0.0, "max_weight": 2000.0, "min_length": 0.0, "max_length": 100000.0}
+{"printer_port": "COM4", "weight_port": "COM5", "plc_ip": "192.168.0.97", "min_weight": 200.0, "max_weight": 500.0, "min_length": 0.0, "max_length": 20000.0, "input_text": "1ST API SPEC 5CT-2221     05-25 PE 7 26.00 K S P 4600 PSI D   {LENGTH} {WEIGHT} HN  241B11000-1  WO 04-0475 {COUNTER}"}

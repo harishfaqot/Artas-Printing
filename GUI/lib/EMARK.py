@@ -63,6 +63,7 @@ class EMARKPrinter:
         #     self.clear_text()
 
     def clear_text(self):
+        print("Clearing Printer Text...")
         spaces = " " * 255
         for i in range(10):
             response = self.send_text(spaces, 
@@ -71,7 +72,8 @@ class EMARKPrinter:
                                     x_pos=i, 
                                     y_pos=0,
                                     char_spacing=i)
-            print(f"Response: {response.hex()}")
+            if response:
+                print(f"Response: {response.hex()}")
         
     def calculate_checksum(self, data):
         """Calculate XOR checksum for the data"""
@@ -84,6 +86,11 @@ class EMARKPrinter:
         :param frame_data: Data bytes (after frame length)
         :return: Response from printer
         """
+
+        if not hasattr(self, 'serial'):
+            # print("Serial port not available.")
+            return False
+        
         # Build the frame
         frame_length = len(frame_data) + 1
         frame = bytes([
@@ -125,11 +132,11 @@ class EMARKPrinter:
         try:
             # First try ASCII encoding
             # text = "1ST API 5CT+2221 LOGO 05+25 PE 7 26`00 K S P 4600 PSI D   40`30 FT 1037 LBS HN  241B11000+1  WO 04+0475"
-            print("Before:",text)
+            # print("Before:",text)
             text = self.remap_special_chars(text)
-            print("After :",text)
+            # print("After :",text)
             data_bytes = text.encode('ascii')
-            print(data_bytes.hex(' '))
+            # print(data_bytes.hex(' '))
         except UnicodeEncodeError:
             print("ERROR")
             try:
