@@ -194,8 +194,9 @@ class EMARKPrinter:
 
 # Example usage
 if __name__ == "__main__":
-    printer = EMARKPrinter(port='COM4')
+    printer = EMARKPrinter()
     try:
+        printer.connect(port= 'COM15')
         # Initialize printer - change port to your actual serial port
         
         

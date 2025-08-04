@@ -5,6 +5,7 @@ from snap7.types import Areas
 class PLCReader:
     def __init__(self):
         self.connected = False  # <-- default to False
+        self.client = None
 
     def connect(self, ip, rack=0, slot=2):
         self.client = snap7.client.Client()
@@ -24,7 +25,7 @@ class PLCReader:
     def read_real(self, db_number, start_byte):
         if not self.client or not self.client.get_connected():
             print("Not connected to PLC.")
-            return None
+            return -1000
         try:
             data = self.client.db_read(db_number, start_byte, 4)
             value = get_real(data, 0)

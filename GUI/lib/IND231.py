@@ -27,7 +27,7 @@ class WeightReader:
     def read_weight(self):
         if not hasattr(self, 'serial'):
             print("Serial port not available.")
-            return random.uniform(0, 1000) 
+            return -1000
 
         try:
             self.serial.flushInput()

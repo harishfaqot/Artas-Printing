@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1500</width>
-    <height>800</height>
+    <width>1887</width>
+    <height>769</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -63,10 +63,9 @@
       </property>
       <widget class="QWidget" name="tab">
        <property name="styleSheet">
-        <string notr="true">#tab {
-    background-color: rgb(250, 250, 250);
-    border: 2px solid rgb(0, 0, 0);
-}</string>
+        <string notr="true">background-color: rgb(250, 250, 250);
+border: 2px solid  rgb(0, 0, 0);
+</string>
        </property>
        <attribute name="title">
         <string>Home</string>
@@ -74,61 +73,6 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="6" column="0" colspan="4">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label_5">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 255);
-border: 2px solid rgb(0, 0, 0);</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap>logo.jpg</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="2" colspan="2">
-           <widget class="QLabel" name="length_status">
-            <property name="font">
-             <font>
-              <pointsize>15</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 170, 0);
-border-radius: 5px;</string>
-            </property>
-            <property name="text">
-             <string>LENGTH : DISCONNECTED</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0" rowspan="2" colspan="2">
            <widget class="QLineEdit" name="lineEdit_weight">
             <property name="sizePolicy">
@@ -152,8 +96,7 @@ border-radius: 5px;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(255, 255, 255);
-border-radius: 10px;
-border: 2px solid rgb(0, 0, 0);</string>
+border-radius: 10px;</string>
             </property>
             <property name="text">
              <string>0 lbs</string>
@@ -166,8 +109,8 @@ border: 2px solid rgb(0, 0, 0);</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="weight_status">
+          <item row="0" column="2" colspan="2">
+           <widget class="QLabel" name="length_status">
             <property name="font">
              <font>
               <pointsize>15</pointsize>
@@ -177,16 +120,14 @@ border: 2px solid rgb(0, 0, 0);</string>
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(255, 170, 0);
-border-radius: 5px;</string>
+border-radius: 5px;
+border: none;</string>
             </property>
             <property name="text">
-             <string>WEIGHT : DISCONNECTED</string>
+             <string>LENGTH : DISCONNECTED</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
-            </property>
-            <property name="margin">
-             <number>0</number>
             </property>
            </widget>
           </item>
@@ -213,8 +154,7 @@ border-radius: 5px;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(255, 255, 255);
-border-radius: 10px;
-border: 2px solid rgb(0, 0, 0);</string>
+border-radius: 10px;</string>
             </property>
             <property name="text">
              <string>0 ft</string>
@@ -227,7 +167,48 @@ border: 2px solid rgb(0, 0, 0);</string>
             </property>
            </widget>
           </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="weight_status">
+            <property name="font">
+             <font>
+              <pointsize>15</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 170, 0);
+border-radius: 5px;
+border: none;</string>
+            </property>
+            <property name="text">
+             <string>WEIGHT : DISCONNECTED</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="margin">
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
           <item row="5" column="0" colspan="4">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Preferred</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="6" column="0" colspan="4">
            <widget class="QTableWidget" name="tableWidget_home">
             <property name="font">
              <font>
@@ -239,79 +220,12 @@ border: 2px solid rgb(0, 0, 0);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QTableWidget {
-    border: 2px solid black;
-}
-
-QHeaderView::section {
-	font: 12pt &quot;MS Shell Dlg 2&quot;;
-}</string>
-            </property>
-            <property name="lineWidth">
-             <number>1</number>
-            </property>
-            <property name="dragEnabled">
-             <bool>false</bool>
-            </property>
-            <property name="gridStyle">
-             <enum>Qt::SolidLine</enum>
-            </property>
-            <property name="cornerButtonEnabled">
-             <bool>true</bool>
+             <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;
+border: none;</string>
             </property>
             <row>
              <property name="text">
               <string>1</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>2</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>3</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>4</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>5</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>6</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>7</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>8</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>9</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>10</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string/>
              </property>
             </row>
             <column>
@@ -336,6 +250,38 @@ QHeaderView::section {
             </column>
            </widget>
           </item>
+          <item row="7" column="0" colspan="4">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Preferred</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap>../../../../emark/GUI/lib/logo.jpg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -348,13 +294,7 @@ QHeaderView::section {
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="0" column="0" colspan="3">
-           <widget class="QTableWidget" name="tableWidget_input">
-            <column>
-             <property name="text">
-              <string>New Column</string>
-             </property>
-            </column>
-           </widget>
+           <widget class="QTableWidget" name="tableWidget_input"/>
           </item>
          </layout>
         </item>
@@ -523,121 +463,23 @@ QPushButton:pressed{
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="7" column="1">
-           <widget class="QComboBox" name="comboBox_length">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>50</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-            </property>
-            <property name="editable">
-             <bool>true</bool>
-            </property>
-            <property name="currentText">
-             <string>milimeter (mm)</string>
-            </property>
-            <property name="frame">
-             <bool>true</bool>
-            </property>
-            <item>
-             <property name="text">
-              <string>milimeter (mm)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>foot (ft)</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="comboBox_com_2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-            </property>
-            <property name="editable">
-             <bool>true</bool>
-            </property>
-            <property name="currentText">
-             <string>COM1</string>
-            </property>
-            <property name="frame">
-             <bool>true</bool>
-            </property>
-            <item>
-             <property name="text">
-              <string>COM1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>COM2</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>COM3</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="label_23">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_18">
             <property name="font">
              <font>
               <pointsize>12</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
              <string notr="true">border:none;</string>
             </property>
             <property name="text">
-             <string>Outer Diameter (OD)</string>
+             <string>EMARK Printer</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="lineEdit_IP">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-            <property name="placeholderText">
-             <string>PLC IP Address</string>
             </property>
            </widget>
           </item>
@@ -679,19 +521,13 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </item>
            </widget>
           </item>
-          <item row="8" column="1">
-           <widget class="QLineEdit" name="lineEdit_length_min">
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="lineEdit_IP">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>50</height>
-             </size>
             </property>
             <property name="font">
              <font>
@@ -702,112 +538,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <string notr="true">background-color: rgb(255, 255, 255);</string>
             </property>
             <property name="placeholderText">
-             <string>Input Min Length (m)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_18">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border:none;</string>
-            </property>
-            <property name="text">
-             <string>EMARK Printer</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QPushButton" name="pushButton_connect_3">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>50</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QPushButton{
-	background-color: rgb(255, 170, 0);
-	border-radius: 10px;
-}
-QPushButton:hover{
-	background-color: rgb(255, 190, 0);
-}
-QPushButton:pressed{
-	background-color: rgb(255, 210, 0);
-}</string>
-            </property>
-            <property name="text">
-             <string>Connect</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="1">
-           <widget class="QLineEdit" name="lineEdit_OD">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>50</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-            <property name="placeholderText">
-             <string>Input OD (mm)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border:none;</string>
-            </property>
-            <property name="text">
-             <string>IND231 Weight Indicator</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <string>PLC IP Address</string>
             </property>
            </widget>
           </item>
@@ -822,7 +553,7 @@ QPushButton:pressed{
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>50</height>
+              <height>80</height>
              </size>
             </property>
             <property name="font">
@@ -849,8 +580,8 @@ QPushButton:pressed{
             </property>
            </widget>
           </item>
-          <item row="10" column="1">
-           <widget class="QLineEdit" name="lineEdit_WT">
+          <item row="3" column="2">
+           <widget class="QPushButton" name="pushButton_connect_3">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -860,26 +591,170 @@ QPushButton:pressed{
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>50</height>
+              <height>80</height>
              </size>
             </property>
             <property name="font">
              <font>
               <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
+             <string notr="true">QPushButton{
+	background-color: rgb(255, 170, 0);
+	border-radius: 10px;
+}
+QPushButton:hover{
+	background-color: rgb(255, 190, 0);
+}
+QPushButton:pressed{
+	background-color: rgb(255, 210, 0);
+}</string>
             </property>
             <property name="text">
-             <string/>
-            </property>
-            <property name="placeholderText">
-             <string>Input WT (mm)</string>
+             <string>Connect</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBox_com_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);
+font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="currentText">
+             <string>COM1</string>
+            </property>
+            <property name="frame">
+             <bool>true</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>COM1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>COM2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>COM3</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border:none;</string>
+            </property>
+            <property name="text">
+             <string>IND231 Weight Indicator</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border:none;</string>
+            </property>
+            <property name="text">
+             <string>PLC SIEMENS S7 300</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pushButton_connect_1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+	background-color: rgb(255, 170, 0);
+	border-radius: 10px;
+}
+QPushButton:hover{
+	background-color: rgb(255, 190, 0);
+}
+QPushButton:pressed{
+	background-color: rgb(255, 210, 0);
+}</string>
+            </property>
+            <property name="text">
+             <string>Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_20">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border:none;</string>
+            </property>
+            <property name="text">
+             <string>Weight Unit</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
            <widget class="QComboBox" name="comboBox_weight">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -901,33 +776,30 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <bool>true</bool>
             </property>
             <property name="currentText">
-             <string>kilogram (kg)</string>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
+             <string>pound (lbs)</string>
             </property>
             <property name="frame">
              <bool>true</bool>
             </property>
             <item>
              <property name="text">
-              <string>kilogram (kg)</string>
+              <string>pound (lbs)</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>pound (lbs)</string>
+              <string>kilogram (kg)</string>
              </property>
             </item>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="label_21">
             <property name="font">
              <font>
               <pointsize>12</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
@@ -941,93 +813,52 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
            </widget>
           </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="label_24">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="comboBox_length">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>50</height>
+             </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">border:none;</string>
+             <string notr="true">background-color: rgb(255, 255, 255);
+font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
-            <property name="text">
-             <string>Wall Thickness (WT)</string>
+            <property name="editable">
+             <bool>true</bool>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+            <property name="currentText">
+             <string>foot (ft)</string>
             </property>
+            <property name="frame">
+             <bool>true</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>foot (ft)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>milimeter (mm)</string>
+             </property>
+            </item>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_26">
-            <property name="font">
-             <font>
-              <pointsize>15</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border:none;</string>
-            </property>
-            <property name="text">
-             <string>Parameter Setup :</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_20">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border:none;</string>
-            </property>
-            <property name="text">
-             <string>Weight Unit</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_17">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border:none;</string>
-            </property>
-            <property name="text">
-             <string>PLC SIEMENS S7 300</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_22">
             <property name="font">
              <font>
               <pointsize>12</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
@@ -1041,7 +872,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
            </widget>
           </item>
-          <item row="11" column="1">
+          <item row="7" column="1">
            <spacer name="verticalSpacer_3">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -1054,8 +885,8 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
            </spacer>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="pushButton_connect_1">
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="lineEdit_IP_2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -1071,44 +902,13 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             <property name="font">
              <font>
               <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton{
-	background-color: rgb(255, 170, 0);
-	border-radius: 10px;
-}
-QPushButton:hover{
-	background-color: rgb(255, 190, 0);
-}
-QPushButton:pressed{
-	background-color: rgb(255, 210, 0);
-}</string>
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
             </property>
-            <property name="text">
-             <string>Connect</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_25">
-            <property name="font">
-             <font>
-              <pointsize>15</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border:none;</string>
-            </property>
-            <property name="text">
-             <string>Connection Setup :</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <property name="placeholderText">
+             <string>Input Min Length</string>
             </property>
            </widget>
           </item>
@@ -1125,7 +925,7 @@ QPushButton:pressed{
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1500</width>
+     <width>1887</width>
      <height>26</height>
     </rect>
    </property>
