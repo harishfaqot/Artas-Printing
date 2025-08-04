@@ -109,6 +109,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.tableWidget_home.setColumnCount(4)
         self.tableWidget_home.setHorizontalHeaderLabels(["Printing Text", "Length", "Weight", "Status Print"])
         self.tableWidget_home.setRowCount(1000)
+        self.tableWidget_home.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
         header = self.tableWidget_input.horizontalHeader()
         header.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)  # Stretch all columns equally
@@ -127,7 +128,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
             ""  # Empty pipe number
         ]
 
-        for i in range(5):
+        for i in range(3):
             for col, text in enumerate(data):
                 item = QTableWidgetItem(text)
                 item.setTextAlignment(Qt.AlignCenter)
