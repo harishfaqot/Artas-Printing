@@ -1,23 +1,18 @@
 import sys
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
 from PyQt5.QtGui import QBrush, QColor
-import datetime
-import openpyxl
-from openpyxl.styles import Font, PatternFill
-import csv
 from lib.EMARK import EMARKPrinter
 from lib.IND231 import WeightReader
 from lib.PLC import PLCReader
-from lib.table import setup_table_functionality
+from lib.table import setup_table_functionality, add_to_history
 import os
 from PyQt5.QtWidgets import QMessageBox
 import json
-import glob
 import time
 from collections import deque
-from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem
 
 CONFIG_FILE = "lib/config.json"
 
@@ -76,26 +71,17 @@ class PrintingSystem(QtWidgets.QMainWindow):
         
 
     def setup_table(self):
-        self.tableWidget.setColumnCount(11)
+        self.tableWidget.setColumnCount(4)
         self.tableWidget.setHorizontalHeaderLabels([
-            "Date", "Time", "Weight", "Min", "Max", 
-            "Length", "Min", "Max", "Counter", 
-            "Printed Text", "Status"
+            "Date", "Time", "Printed Text", "Status"
         ])
         
         # Set different resize modes for different columns
         header = self.tableWidget.horizontalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)  # Date
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)  # Time
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)  # Weight
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)  # Min (Weight)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)  # Max (Weight)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)  # Length
-        header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)  # Min (Length)
-        header.setSectionResizeMode(7, QtWidgets.QHeaderView.ResizeToContents)  # Max (Length)
-        header.setSectionResizeMode(8, QtWidgets.QHeaderView.ResizeToContents)  # Counter
-        header.setSectionResizeMode(9, QtWidgets.QHeaderView.Stretch)          # Printed Text
-        header.setSectionResizeMode(10, QtWidgets.QHeaderView.ResizeToContents) # Status
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)          # Printed Text
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents) # Status
        
         # Set minimum sizes if needed
         header.setMinimumSectionSize(120)  # Minimum width for all columns
@@ -330,17 +316,20 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 weight_text = self.tableWidget_home.item(self.printer_counter, 2)
 
                 if now - self.printer_timer >= 2 and not self.printer_processed and length_text and weight_text:
+                    status_length = self.tableWidget_home.item(self.printer_counter, 3)
+                    status_weight = self.tableWidget_home.item(self.printer_counter, 3)
                     status_print = self.tableWidget_home.item(self.printer_counter, 3)
                     if status_print:
                         status_print = status_print.text()
-                        self.printer(status_print)
+                        result = status_print.split('(')[1].strip(')')
+                        self.printer(result)
 
-                        if "REJECT" in status_print:
+                        if "REJECT" == result:
                             printed_item = QTableWidgetItem("REJECT")
                             printed_item.setTextAlignment(Qt.AlignCenter)
                             printed_item.setBackground(QBrush(QColor(color_red)))
                             self.tableWidget_home.setItem(self.printer_counter, 3, printed_item)
-                        elif "NORMAL" in status_print:
+                        elif "NORMAL" == result:
                             printed_item = QTableWidgetItem("NORMAL")
                             printed_item.setTextAlignment(Qt.AlignCenter)
                             printed_item.setBackground(QBrush(QColor(color_green)))
@@ -642,7 +631,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                     self.EMARK.clear_text()
 
                 # Add to history (whether printed or rejected)
-                # self.add_to_history(self.weight, self.length, self.counter_text, output_text, status)
+                add_to_history(self, output_text, status)
             
         except Exception as e:
             print(e)
