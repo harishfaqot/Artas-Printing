@@ -123,8 +123,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
         data = [
             "1ST API SPEC 5CT-2221",
             "05-25 PE 7 26.00 K S P 4600 PSI D",
-            "241B11000-1",
-            "04-0475",
+            "HN 241B11000-1",
+            "WO 04-0475",
             ""  # Empty pipe number
         ]
 
