@@ -26,7 +26,7 @@ def setup_table_functionality(self, table):
             text += "\n"
         
         QApplication.clipboard().setText(text)
-    
+
     def paste():
         selected = table.selectedIndexes()
         if not selected:
@@ -56,16 +56,43 @@ def setup_table_functionality(self, table):
                     new_item.setTextAlignment(Qt.AlignCenter)
                     table.setItem(row + i, col + j, new_item)
 
+    def delete():
+        # Block signals to prevent unwanted updates
+        self.tableWidget_input.blockSignals(True)
+        self.tableWidget_home.blockSignals(True)
+        
+        selected = self.tableWidget_input.selectedIndexes()
+        if not selected:
+            return
+
+        # Get unique rows to delete (sorted from bottom to top)
+        rows_to_delete = sorted(set(index.row() for index in selected), reverse=True)
+
+        # Delete rows in both tables
+        for row in rows_to_delete:
+            self.tableWidget_input.removeRow(row)
+            if row < self.tableWidget_home.rowCount():
+                self.tableWidget_home.removeRow(row)
+        
+        # Qt will automatically update the default row numbers in both tables
+        
+        # Unblock signals
+        self.tableWidget_input.blockSignals(False)
+        self.tableWidget_home.blockSignals(False)
+
     def keyPressEvent(event):
         if event.key() == Qt.Key_C and event.modifiers() == Qt.ControlModifier:
             copy()
         elif event.key() == Qt.Key_V and event.modifiers() == Qt.ControlModifier:
             paste()
+        elif event.key() == Qt.Key_Delete:
+            delete()
         else:
             QTableWidget.keyPressEvent(table, event)
-    
+
     table.copy = copy
     table.paste = paste
+    table.delete = delete
     table.keyPressEvent = keyPressEvent
 
 def add_to_history(self, output_text, status):

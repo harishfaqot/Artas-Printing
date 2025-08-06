@@ -86,25 +86,25 @@ class PrintingSystem(QtWidgets.QMainWindow):
         # Set minimum sizes if needed
         header.setMinimumSectionSize(120)  # Minimum width for all columns
 
+        self.tableWidget_home.setColumnCount(4)
+        self.tableWidget_home.setHorizontalHeaderLabels(["Printing Text", "Length", "Weight", "Status Print"])
+        self.tableWidget_home.setRowCount(1000)
+        self.tableWidget_home.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         header = self.tableWidget_home.horizontalHeader()
         header.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)  # Stretch all columns equally
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         header.setDefaultAlignment(Qt.AlignCenter)
         vheader = self.tableWidget_home.verticalHeader()
         vheader.setDefaultAlignment(Qt.AlignCenter)
-        self.tableWidget_home.setColumnCount(4)
-        self.tableWidget_home.setHorizontalHeaderLabels(["Printing Text", "Length", "Weight", "Status Print"])
-        self.tableWidget_home.setRowCount(1000)
-        self.tableWidget_home.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
+        self.tableWidget_input.setColumnCount(5)
+        self.tableWidget_input.setHorizontalHeaderLabels(["TEXT 1", "TEXT 2", "HEAT NUMBER", "WORK ORDER", "PIPE NUMBER"])
+        self.tableWidget_input.setRowCount(1000)
         header = self.tableWidget_input.horizontalHeader()
         header.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)  # Stretch all columns equally
         header.setDefaultAlignment(Qt.AlignCenter)
         vheader = self.tableWidget_input.verticalHeader()
         vheader.setDefaultAlignment(Qt.AlignCenter)
-        self.tableWidget_input.setColumnCount(5)
-        self.tableWidget_input.setHorizontalHeaderLabels(["TEXT 1", "TEXT 2", "HEAT NUMBER", "WORK ORDER", "PIPE NUMBER"])
-        self.tableWidget_input.setRowCount(1000)
 
         data = [
             "1ST API SPEC 5CT-2221",
@@ -201,7 +201,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
             now = time.time()
 
             # LENGTH sensor
-            length_on = self.PLC.read_bit(byte=6, bit=5)
+            length_on = True
             if length_on:
                 if self.PLC.connected:
                     self.length_status.setText("LENGTH : MEASURING")
@@ -428,7 +428,6 @@ class PrintingSystem(QtWidgets.QMainWindow):
             text = item.text() if item else ""
             values.append(text)
 
-        # print(values)
         combined_text = f"{values[0]}          {values[1]}    [L]{self.length_unit}    [W]{self.weight_unit}   {values[2]}   {values[3]}   {values[4]}"
 
         # Update the first column (Printing Text) of tableWidget_home
