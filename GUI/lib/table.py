@@ -1,9 +1,11 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QFileDialog
 import datetime
 import openpyxl
 import csv
 from openpyxl.styles import Font, PatternFill
+import os
+from PyQt5.QtWidgets import QMessageBox
 
 def setup_table_functionality(self, table):
     def copy():
@@ -95,7 +97,7 @@ def setup_table_functionality(self, table):
     table.delete = delete
     table.keyPressEvent = keyPressEvent
 
-def add_to_history(self, output_text, status):
+def add_to_history(self, length_text, weight_text, output_text, status):
     current_time = datetime.datetime.now()
     date_str = current_time.strftime("%Y-%m-%d")
     time_str = current_time.strftime("%H:%M:%S")
@@ -106,28 +108,24 @@ def add_to_history(self, output_text, status):
     for col, value in enumerate([
         date_str,
         time_str,
+        length_text,
+        weight_text,
         output_text,
         status
     ]):
         item = QTableWidgetItem(value)
         item.setTextAlignment(Qt.AlignCenter)
-        item.setFlags(item.flags() ^ Qt.ItemIsEditable)
         self.tableWidget.setItem(row_position, col, item)
-
+        
     # Save to CSV
-    # self.save_to_csv(date_str, time_str, weight, length, counter, output_text, status)
+    save_to_csv(date_str, time_str, length_text, weight_text, output_text, status)
 
-def save_to_csv(self, date, time, weight, length, counter, output_text, status):
+def save_to_csv(date, time, length_text, weight_text, output_text, status):
     current_time = datetime.datetime.now()
     date_str = current_time.strftime("%Y-%m-%d")
     csv_file = f"logs/{date_str}.csv"
     
     file_exists = os.path.isfile(csv_file)
-    
-    weight_min = self.lineEdit_downlimit.text()
-    weight_max = self.lineEdit_uplimit.text()
-    length_min = self.lineEdit_downlimit_1.text()
-    length_max = self.lineEdit_uplimit_1.text()
     
     try:
         with open(csv_file, 'a', newline='', encoding='utf-8') as f:
@@ -135,21 +133,14 @@ def save_to_csv(self, date, time, weight, length, counter, output_text, status):
             
             if not file_exists:
                 writer.writerow([
-                    "Date", "Time", "Weight", "Min", "Max", 
-                    "Length", "Min", "Max", "Counter", 
-                    "Printed Text", "Status"
-                ])
+                    "Date", "Time", "Length", "Weight", "Printed Text", "Status"
+                    ])
             
             writer.writerow([
                 date,
                 time,
-                f"{weight} {self.weight_unit}",
-                weight_min,
-                weight_max,
-                f"{length} {self.length_unit}",
-                length_min,
-                length_max,
-                str(counter),
+                length_text,
+                weight_text,
                 output_text,
                 status
             ])
@@ -158,14 +149,15 @@ def save_to_csv(self, date, time, weight, length, counter, output_text, status):
 
 def load_last_csv(self):
     try:
-        csv_files = glob.glob("logs/*.csv")
-        if not csv_files:
+        current_time = datetime.datetime.now()
+        date_str = current_time.strftime("%Y-%m-%d")
+        csv_file = f"logs/{date_str}.csv"
+        if not csv_file:
             return
 
-        latest_file = max(csv_files, key=os.path.getmtime)
-        self.lineEdit_path.setText(latest_file)
+        self.lineEdit_path.setText(csv_file)
 
-        with open(latest_file, 'r', newline='', encoding='utf-8') as f:
+        with open(csv_file, 'r', newline='', encoding='utf-8') as f:
             reader = csv.reader(f)
             headers = next(reader)  # Skip header row
 
@@ -177,15 +169,6 @@ def load_last_csv(self):
                 for col, value in enumerate(row_data):
                     item = QTableWidgetItem(value)
                     item.setTextAlignment(Qt.AlignCenter)
-                    item.setFlags(item.flags() ^ Qt.ItemIsEditable)
-                    
-                    # Apply color coding for rejected items when loading
-                    if col == 10 and value != "OK":  # Status column is now index 10
-                        if "WEIGHT" in value:
-                            item.setBackground(QBrush(QColor("yellow")))
-                        elif "LENGTH" in value:
-                            item.setBackground(QBrush(QColor("orange")))
-                            
                     self.tableWidget.setItem(row_position, col, item)
     except Exception as e:
         print(f"Failed to load last CSV: {e}")
@@ -212,15 +195,6 @@ def open_file(self):
                     for col, value in enumerate(row_data):
                         item = QTableWidgetItem(value)
                         item.setTextAlignment(Qt.AlignCenter)
-                        item.setFlags(item.flags() ^ Qt.ItemIsEditable)
-                        
-                        # Apply color coding for rejected items
-                        if col == 10 and value != "OK":  # Status column
-                            if "WEIGHT" in value:
-                                item.setBackground(QBrush(QColor("yellow")))
-                            elif "LENGTH" in value:
-                                item.setBackground(QBrush(QColor("orange")))
-                                
                         self.tableWidget.setItem(row_position, col, item)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to open file: {str(e)}")

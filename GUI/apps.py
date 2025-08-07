@@ -6,7 +6,7 @@ from PyQt5.QtGui import QBrush, QColor
 from lib.EMARK import EMARKPrinter
 from lib.IND231 import WeightReader
 from lib.PLC import PLCReader
-from lib.table import setup_table_functionality, add_to_history
+from lib.table import setup_table_functionality, add_to_history, open_file, save_data, export_to_excel, load_last_csv
 import os
 from PyQt5.QtWidgets import QMessageBox
 import json
@@ -71,17 +71,22 @@ class PrintingSystem(QtWidgets.QMainWindow):
         
 
     def setup_table(self):
-        self.tableWidget.setColumnCount(4)
+        self.tableWidget.setColumnCount(6)
         self.tableWidget.setHorizontalHeaderLabels([
-            "Date", "Time", "Printed Text", "Status"
+            "Date", "Time", "Length", "Weight", "Printed Text", "Status"
         ])
+        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         
         # Set different resize modes for different columns
         header = self.tableWidget.horizontalHeader()
+        # header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+        
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)  # Date
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)  # Time
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)          # Printed Text
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents) # Status
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
        
         # Set minimum sizes if needed
         header.setMinimumSectionSize(120)  # Minimum width for all columns
@@ -201,37 +206,40 @@ class PrintingSystem(QtWidgets.QMainWindow):
             now = time.time()
 
             # LENGTH sensor
-            length_on = True
+            length_on = self.PLC.read_bit(byte=6, bit=5)
             if length_on:
                 if self.PLC.connected:
                     self.length_status.setText("LENGTH : MEASURING")
 
                 if now - self.length_timer >= 2 and not self.length_processed:
-                    current_text = self.tableWidget_home.item(self.row_active, 0)
-                    if current_text:
-                        status_length = self.check_length(self.length)
-                        length_text = f"{self.length}\n({status_length})"
+                    if self.length<=0:
+                        self.length_status.setText("LENGTH : INVALID")
+                    else:
+                        current_text = self.tableWidget_home.item(self.row_active, 0)
+                        if current_text:
+                            status_length = self.check_length(self.length)
+                            length_text = f"{self.length}\n({status_length})"
 
-                        length_item = QTableWidgetItem(length_text)
-                        length_item.setTextAlignment(Qt.AlignCenter)
-                        if "UNDERLENGTH" in status_length or "OVERLENGTH" in status_length:
-                            length_item.setBackground(QBrush(QColor(color_red)))
-                            self.status = "REJECT"
-                        elif "NORMAL" in status_length:
-                            length_item.setBackground(QBrush(QColor(color_green)))
-                            self.status = "NORMAL"
+                            length_item = QTableWidgetItem(length_text)
+                            length_item.setTextAlignment(Qt.AlignCenter)
+                            if "UNDERLENGTH" in status_length or "OVERLENGTH" in status_length:
+                                length_item.setBackground(QBrush(QColor(color_red)))
+                                self.status = "REJECT"
+                            elif "NORMAL" in status_length:
+                                length_item.setBackground(QBrush(QColor(color_green)))
+                                self.status = "NORMAL"
 
-                        self.tableWidget_home.setItem(self.row_active, 1, length_item)
-                        self.tableWidget_home.setWordWrap(True)
-                        self.tableWidget_home.resizeRowsToContents()
+                            self.tableWidget_home.setItem(self.row_active, 1, length_item)
+                            self.tableWidget_home.setWordWrap(True)
+                            self.tableWidget_home.resizeRowsToContents()
 
-                        current_text = current_text.text().replace("[L]", str(self.length), 1)
-                        self.tableWidget_home.setItem(self.row_active, 0, QTableWidgetItem(current_text))
-                    
-                        self.highlight_row_by_counter()
+                            current_text = current_text.text().replace("[L]", str(self.length), 1)
+                            self.tableWidget_home.setItem(self.row_active, 0, QTableWidgetItem(current_text))
+                        
+                            self.highlight_row_by_counter()
 
-                    self.length_processed = True
-                    self.length_timer = now
+                        self.length_processed = True
+                        self.length_timer = now
             else:
                 if self.PLC.connected:
                     self.length_status.setText("LENGTH : ONLINE")
@@ -258,39 +266,42 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
                 length_text = self.tableWidget_home.item(self.row_active, 1)
                 if now - self.weight_timer >= 2  and not self.weight_processed and length_text:
-                    status_weight = self.check_weight(self.weight)
-                    weight_text = f"{self.weight}\n({status_weight})"
+                    if self.weight <= 0:
+                        self.weight_status.setText("LENGTH : INVALID")
+                    else:
+                        status_weight = self.check_weight(self.weight)
+                        weight_text = f"{self.weight}\n({status_weight})"
 
-                    weight_item = QTableWidgetItem(weight_text)
-                    weight_item.setTextAlignment(Qt.AlignCenter)
-                    if "UNDERWEIGHT" in status_weight or "OVERWEIGHT" in status_weight or "REJECT" in self.status:
-                        weight_item.setBackground(QBrush(QColor(color_red)))
+                        weight_item = QTableWidgetItem(weight_text)
+                        weight_item.setTextAlignment(Qt.AlignCenter)
+                        if "UNDERWEIGHT" in status_weight or "OVERWEIGHT" in status_weight or "REJECT" in self.status:
+                            weight_item.setBackground(QBrush(QColor(color_red)))
 
-                        printed_item = QTableWidgetItem("WAITING (REJECT)")
-                        printed_item.setTextAlignment(Qt.AlignCenter)
-                        self.tableWidget_home.setItem(self.row_active, 3, printed_item)
+                            printed_item = QTableWidgetItem("WAITING (REJECT)")
+                            printed_item.setTextAlignment(Qt.AlignCenter)
+                            self.tableWidget_home.setItem(self.row_active, 3, printed_item)
 
-                    elif "NORMAL" in status_weight and "NORMAL" in self.status:
-                        weight_item.setBackground(QBrush(QColor(color_green)))
+                        elif "NORMAL" in status_weight and "NORMAL" in self.status:
+                            weight_item.setBackground(QBrush(QColor(color_green)))
 
-                        printed_item = QTableWidgetItem("WAITING (NORMAL)")
-                        printed_item.setTextAlignment(Qt.AlignCenter)
-                        self.tableWidget_home.setItem(self.row_active, 3, printed_item)
+                            printed_item = QTableWidgetItem("WAITING (NORMAL)")
+                            printed_item.setTextAlignment(Qt.AlignCenter)
+                            self.tableWidget_home.setItem(self.row_active, 3, printed_item)
 
-                    self.tableWidget_home.setItem(self.row_active, 2, weight_item)
-                    self.tableWidget_home.setWordWrap(True)
-                    self.tableWidget_home.resizeRowsToContents()
+                        self.tableWidget_home.setItem(self.row_active, 2, weight_item)
+                        self.tableWidget_home.setWordWrap(True)
+                        self.tableWidget_home.resizeRowsToContents()
 
-                    current_text = self.tableWidget_home.item(self.row_active, 0)
-                    if current_text:
-                        current_text = current_text.text().replace("[W]", str(self.weight), 1)
-                        self.tableWidget_home.setItem(self.row_active, 0, QTableWidgetItem(current_text))
+                        current_text = self.tableWidget_home.item(self.row_active, 0)
+                        if current_text:
+                            current_text = current_text.text().replace("[W]", str(self.weight), 1)
+                            self.tableWidget_home.setItem(self.row_active, 0, QTableWidgetItem(current_text))
 
-                        self.row_active +=1
-                        self.highlight_row_by_counter()
+                            self.row_active +=1
+                            self.highlight_row_by_counter()
 
-                    self.weight_processed = True
-                    self.weight_timer = now
+                        self.weight_processed = True
+                        self.weight_timer = now
             else:
                 if self.WEIGHT.connected:
                     self.weight_status.setText("WEIGHT : ONLINE")
@@ -352,9 +363,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.pushButton_connect_3.clicked.connect(self.connect_PLC)
         
         # History tab signals
-        # self.pushButton_open.clicked.connect(self.open_file)
-        # self.pushButton_save.clicked.connect(self.save_data)
-        # self.pushButton_export.clicked.connect(self.export_to_excel)
+        self.pushButton_open.clicked.connect(open_file)
+        self.pushButton_save.clicked.connect(save_data)
+        self.pushButton_export.clicked.connect(export_to_excel)
         
         # Combo box changes
         self.comboBox_weight.currentTextChanged.connect(self.update_weight_unit)
@@ -376,7 +387,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
         # Setup table columns
         self.setup_table()
-        # self.load_last_csv()
+        load_last_csv(self)
 
         self.highlight_row_by_counter()
     
@@ -607,6 +618,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
     def printer(self, status):
         try:
             output_text = self.tableWidget_home.item(self.printer_counter, 0)
+            length_text = self.tableWidget_home.item(self.printer_counter, 1)
+            weight_text = self.tableWidget_home.item(self.printer_counter, 2)
             if output_text:
                 if status == "NORMAL":
                     response = None
@@ -630,7 +643,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                     self.EMARK.clear_text()
 
                 # Add to history (whether printed or rejected)
-                add_to_history(self, output_text, status)
+                add_to_history(self, length_text.text().replace("\n", " "), weight_text.text().replace("\n", " "), output_text.text(), status)
             
         except Exception as e:
             print(e)
