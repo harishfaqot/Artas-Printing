@@ -47,6 +47,19 @@ class PLCReader:
         except Exception as e:
             print(f"Read error: {e}")
             return None
+        
+    def read_mem(self, byte, bit):
+        if not self.client or not self.client.get_connected():
+            print("Not connected to PLC.")
+            return None
+        try:
+            data = self.client.read_area(Areas.MK, 0, byte, 1)
+            value = get_bool(data, 0, bit)
+            print(f"Value at Byte {byte}.{bit}:", value)
+            return value
+        except Exception as e:
+            print(f"Read error: {e}")
+            return None
 
     def close(self):
         if self.client and self.client.get_connected():

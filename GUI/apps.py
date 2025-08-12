@@ -67,7 +67,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         # Start polling
         self.sensor_timer = QTimer()
         self.sensor_timer.timeout.connect(self.poll_sensors)
-        self.sensor_timer.start(1000)
+        self.sensor_timer.start(500)
         
 
     def setup_table(self):
@@ -207,8 +207,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
             # LENGTH sensor
             length_on = self.PLC.read_bit(byte=6, bit=5)
-            if length_on:
-                if self.PLC.connected:
+            length_on_2 = self.PLC.read_mem(byte=236, bit=0)
+            if length_on and length_on_2:
+                if self.PLC.connected and not self.length_processed:
                     self.length_status.setText("LENGTH : MEASURING")
 
                 if now - self.length_timer >= 2 and not self.length_processed:
@@ -240,6 +241,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
                         self.length_processed = True
                         self.length_timer = now
+                        self.length_status.setText("LENGTH : MEASURE DONE")
             else:
                 if self.PLC.connected:
                     self.length_status.setText("LENGTH : ONLINE")
@@ -261,7 +263,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
             # WEIGHT sensor
             weight_on = self.PLC.read_bit(byte=6, bit=6)
             if weight_on:
-                if self.WEIGHT.connected:
+                if self.WEIGHT.connected and not self.weight_processed:
                     self.weight_status.setText("WEIGHT : MEASURING")
 
                 length_text = self.tableWidget_home.item(self.row_active, 1)
@@ -302,6 +304,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
                         self.weight_processed = True
                         self.weight_timer = now
+                        self.weight_status.setText("WEIGHT : MEASURE DONE")
             else:
                 if self.WEIGHT.connected:
                     self.weight_status.setText("WEIGHT : ONLINE")

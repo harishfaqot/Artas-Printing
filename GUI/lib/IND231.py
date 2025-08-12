@@ -28,12 +28,13 @@ class WeightReader:
         if not hasattr(self, 'serial'):
             print("Serial port not available.")
             return -1000
+            # return 573.03
 
         try:
             self.serial.flushInput()
             self.serial.write(b'SI\r\n')  # Send SI command
             response = self.serial.readline().decode('utf-8').strip()
-            print(f"Raw response: {response}")
+            print(f"IND 231 Raw response: {response}")
 
             if response.startswith("S S") or response.startswith("S D"):
                 # Attempt to extract the numeric weight value
@@ -54,6 +55,8 @@ class WeightReader:
                 print("Terminal in underload range.")
             else:
                 print(f"Unknown response: {response}")
+                return -1000
+                # return 573.03
 
             # return response
 
