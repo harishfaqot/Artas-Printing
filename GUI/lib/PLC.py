@@ -29,7 +29,7 @@ class PLCReader:
         try:
             data = self.client.db_read(db_number, start_byte, 4)
             value = get_real(data, 0)
-            print(f"Value at DB{db_number}.DBD{start_byte}:", value)
+            # print(f"Value at DB{db_number}.DBD{start_byte}:", value)
             return value
         except Exception as e:
             print(f"Read error: {e}")
@@ -42,7 +42,7 @@ class PLCReader:
         try:
             data = self.client.read_area(Areas.PE, 0, byte, 1)
             value = get_bool(data, 0, bit)
-            print(f"Value at Byte {byte}.{bit}:", value)
+            # print(f"Value at Byte {byte}.{bit}:", value)
             return value
         except Exception as e:
             print(f"Read error: {e}")
@@ -55,7 +55,7 @@ class PLCReader:
         try:
             data = self.client.read_area(Areas.MK, 0, byte, 1)
             value = get_bool(data, 0, bit)
-            print(f"Value at Byte {byte}.{bit}:", value)
+            # print(f"Value at Byte {byte}.{bit}:", value)
             return value
         except Exception as e:
             print(f"Read error: {e}")
