@@ -384,9 +384,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.pushButton_connect_3.clicked.connect(self.connect_PLC)
         
         # History tab signals
-        self.pushButton_open.clicked.connect(open_file)
-        self.pushButton_save.clicked.connect(save_data)
-        self.pushButton_export.clicked.connect(export_to_excel)
+        self.pushButton_open.clicked.connect(lambda: open_file(self))
+        self.pushButton_save.clicked.connect(lambda: save_data(self))
+        self.pushButton_export.clicked.connect(lambda: export_to_excel(self))
         
         # Combo box changes
         self.comboBox_weight.currentTextChanged.connect(self.update_weight_unit)
