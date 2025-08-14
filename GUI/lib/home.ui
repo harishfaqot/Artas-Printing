@@ -108,28 +108,41 @@ border: 2px solid rgb(0, 0, 0);</string>
             </item>
            </layout>
           </item>
-          <item row="0" column="2" colspan="2">
-           <widget class="QLabel" name="length_status">
+          <item row="5" column="0" colspan="4">
+           <widget class="QTableWidget" name="tableWidget_home">
             <property name="font">
              <font>
-              <pointsize>15</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
+              <family>MS Shell Dlg 2</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 170, 0);
-border-radius: 5px;</string>
+             <string notr="true">QTableWidget {
+    border: 2px solid black;
+}
+
+QHeaderView::section {
+	font: 12pt &quot;MS Shell Dlg 2&quot;;
+}</string>
             </property>
-            <property name="text">
-             <string>LENGTH : DISCONNECTED</string>
+            <property name="lineWidth">
+             <number>1</number>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+            <property name="dragEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="gridStyle">
+             <enum>Qt::SolidLine</enum>
+            </property>
+            <property name="cornerButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" rowspan="2" colspan="2">
+          <item row="4" column="2">
            <widget class="QLineEdit" name="lineEdit_weight">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -166,31 +179,7 @@ border: 2px solid rgb(0, 0, 0);</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="weight_status">
-            <property name="font">
-             <font>
-              <pointsize>15</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 170, 0);
-border-radius: 5px;</string>
-            </property>
-            <property name="text">
-             <string>WEIGHT : DISCONNECTED</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="margin">
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2" rowspan="2" colspan="2">
+          <item row="4" column="0">
            <widget class="QLineEdit" name="lineEdit_length">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -227,37 +216,48 @@ border: 2px solid rgb(0, 0, 0);</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="4">
-           <widget class="QTableWidget" name="tableWidget_home">
+          <item row="1" column="2">
+           <widget class="QLabel" name="weight_status">
             <property name="font">
              <font>
-              <family>MS Shell Dlg 2</family>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
+              <pointsize>15</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">QTableWidget {
-    border: 2px solid black;
-}
-
-QHeaderView::section {
-	font: 12pt &quot;MS Shell Dlg 2&quot;;
-}</string>
+             <string notr="true">background-color: rgb(255, 170, 0);
+border-radius: 5px;</string>
             </property>
-            <property name="lineWidth">
-             <number>1</number>
+            <property name="text">
+             <string>WEIGHT : DISCONNECTED</string>
             </property>
-            <property name="dragEnabled">
-             <bool>false</bool>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
-            <property name="gridStyle">
-             <enum>Qt::SolidLine</enum>
+            <property name="margin">
+             <number>0</number>
             </property>
-            <property name="cornerButtonEnabled">
-             <bool>true</bool>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="length_status">
+            <property name="font">
+             <font>
+              <pointsize>15</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 170, 0);
+border-radius: 5px;</string>
+            </property>
+            <property name="text">
+             <string>LENGTH : DISCONNECTED</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
