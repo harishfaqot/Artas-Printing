@@ -68,7 +68,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         # Start polling
         self.sensor_timer = QTimer()
         self.sensor_timer.timeout.connect(self.poll_sensors)
-        self.sensor_timer.start(500)
+        self.sensor_timer.start(1000)
         
 
     def setup_table(self):
