@@ -65,6 +65,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.connect_signals()
         self.auto_connect()
 
+        self.comboBox_font.setCurrentIndex(3)
+
         # Start polling
         self.sensor_timer = QTimer()
         self.sensor_timer.timeout.connect(self.poll_sensors)
@@ -644,10 +646,17 @@ class PrintingSystem(QtWidgets.QMainWindow):
             if output_text:
                 if status == "NORMAL":
                     response = None
+                    font_size_list = {"5x5": 0x05, "7x5": 0x08, "9x6": 0x09, "12x8": 0x0C, "16x10": 0x10}
+    
+                    # Get the selected text from comboBox and look it up in the dict
+                    selected_font = self.comboBox_font.currentText()
+                    font_size = font_size_list.get(selected_font, 0x0C)  # default to "12x8" if not found
+                    print("font", font_size)
+
                     for i in range(6):
                         response = self.EMARK.send_text(output_text.text(), 
                                                 template_num=1, 
-                                                font_height=0x0C,  # 16 dot matrix
+                                                font_height=font_size,  # 16 dot matrix
                                                 x_pos=0, 
                                                 y_pos=0)
                         if response:
