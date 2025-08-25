@@ -1,1 +1,1 @@
-{"printer_port": "COM21", "weight_port": "COM20", "plc_ip": "192.168.100.53", "min_length": 11.51, "OD": 168.3, "WT": 10.97, "min_weight": 298.2241216064558, "max_weight": 319.85695944319355}
+{"printer_port": "COM21", "weight_port": "COM20", "plc_ip": "192.168.100.53", "min_length": 11.51, "OD": 168.3, "WT": 10.97, "min_weight": 483.78430045161724, "max_weight": 518.8774621424081, "length_unit": "milimeter (mm)", "weight_unit": "kilogram (kg)"}

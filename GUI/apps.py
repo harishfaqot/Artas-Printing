@@ -29,6 +29,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
         # Initialize variables
         self.weight_unit = "kg"
         self.length_unit = "mm"
+        self.weight_factor = 0
+        self.length_factor = 0
         self.weight = 0
         self.length = 0
         self.length_converted = False
@@ -71,7 +73,6 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.sensor_timer = QTimer()
         self.sensor_timer.timeout.connect(self.poll_sensors)
         self.sensor_timer.start(1000)
-        
 
     def setup_table(self):
         self.tableWidget.setColumnCount(6)
@@ -143,7 +144,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
                     "plc_ip": "",
                     "min_length": 0,
                     "OD": 0,
-                    "WT": 0
+                    "WT": 0,
+                    "length_unit": "kilogram (kg)",
+                    "weight_unit": "milimeter (mm)"
                 }
         else:
             return {
@@ -152,7 +155,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 "plc_ip": "",
                 "min_length": 0,
                 "OD": 0,
-                "WT": 0
+                "WT": 0,
+                "length_unit": "kilogram (kg)",
+                "weight_unit": "milimeter (mm)"
             }
 
     def save_config(self):
@@ -195,14 +200,17 @@ class PrintingSystem(QtWidgets.QMainWindow):
         try:
             self.length = round(self.PLC.read_real(db_number=2, start_byte=0), 2)
             self.weight = round(self.WEIGHT.read_weight(),2)
+            self.length_factor = 1
+            self.weight_factor = 1
 
             if self.length_unit == "ft":
                 self.length = round(self.length / 304.8, 2)
+                self.length_factor = 1 / 304.8
 
             if self.weight_unit == "lbs":
                 self.weight = round(self.weight * 2.20462262, 2)
+                self.weight_factor = 1 * 2.20462262
 
-            
             self.lineEdit_weight.setText(f"{self.weight} {self.weight_unit}")
             self.lineEdit_length.setText(f"{self.length} {self.length_unit}")
 
@@ -223,7 +231,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
             # LENGTH sensor
             length_on = self.PLC.read_bit_I(byte=6, bit=5)
-            length_on_2 = self.PLC.read_bit_Q(byte=1, bit=4)
+            # length_on_2 = self.PLC.read_bit_Q(byte=1, bit=4)
+            length_on_2 = True
             if length_on and length_on_2:
                 if self.PLC.connected and not self.length_processed:
                     self.length_status.setText("LENGTH : MEASURING")
@@ -290,7 +299,13 @@ class PrintingSystem(QtWidgets.QMainWindow):
                     if self.weight <= 0:
                         self.weight_status.setText("LENGTH : INVALID")
                     else:
-                        status_weight = self.check_weight(self.weight)
+                        current_length = self.tableWidget_home.item(self.weight_counter, 1)
+                        if current_length:
+                            current_length = float(current_length.text().split()[0])
+                        else:
+                            print("Current Length Empty!")
+                        print(f"Using Length = {current_length} for calculate weight min max")
+                        status_weight = self.check_weight(self.weight, current_length)
                         weight_text = f"{self.weight}\n({status_weight})"
 
                         weight_item = QTableWidgetItem(weight_text)
@@ -350,8 +365,6 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 weight_text = self.tableWidget_home.item(self.printer_counter, 2)
 
                 if now - self.printer_timer >= 2 and not self.printer_processed and length_text and weight_text:
-                    status_length = self.tableWidget_home.item(self.printer_counter, 3)
-                    status_weight = self.tableWidget_home.item(self.printer_counter, 3)
                     status_print = self.tableWidget_home.item(self.printer_counter, 3)
                     if status_print:
                         status_print = status_print.text()
@@ -404,6 +417,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.lineEdit_OD.setText(str(self.config["OD"]))
         self.lineEdit_WT.setText(str(self.config["WT"]))
         self.lineEdit_IP.setText(self.config["plc_ip"])
+
+        self.comboBox_length.setCurrentText(self.config["length_unit"])
+        self.comboBox_weight.setCurrentText(self.config["weight_unit"])
 
         self.lineEdit_weight.setText(f"{self.weight} {self.weight_unit}")
         self.lineEdit_length.setText(f"{self.length} {self.length_unit}")
@@ -474,11 +490,17 @@ class PrintingSystem(QtWidgets.QMainWindow):
         """Update the weight unit based on combo box selection"""
         self.weight_unit = text.split("(")[1].strip(")")
         self.lineEdit_weight.setText(f"{self.weight} {self.weight_unit}")
+        self.config["weight_unit"] = text
+        print(f"Updating Weight Unit to {self.weight_unit}")
+        self.save_config()
     
     def update_length_unit(self, text):
         """Update the length unit based on combo box selection"""
         self.length_unit = text.split("(")[1].strip(")")
         self.lineEdit_length.setText(f"{self.length} {self.length_unit}")
+        self.config["length_unit"] = text
+        print(f"Updating Length Unit to {self.length_unit}")
+        self.save_config()
             
     def connect_printer(self):
         if self.EMARK.connected:
@@ -618,22 +640,22 @@ class PrintingSystem(QtWidgets.QMainWindow):
     def check_length(self, length):
         # Determine status
         status_length = "NORMAL"
-        if length/1000 < self.config["min_length"]:
+        if length/1000 < self.config["min_length"] * self.length_factor:
             status_length = "UNDERLENGTH"
         
         return status_length
     
-    def check_weight(self, weight):
-        thr_weight = (self.config["OD"] - self.config["WT"]) * self.config["WT"] * self.length/1000 * 0.02466
+    def check_weight(self, weight, length):
+        thr_weight = (self.config["OD"] - self.config["WT"]) * self.config["WT"] * length/1000 / self.length_factor * 0.02466
         self.config["min_weight"] = thr_weight - (thr_weight * 0.035)
         self.config["max_weight"] = thr_weight + (thr_weight * 0.035)
-        print(f"WEIGHT = {self.weight} | THR = {thr_weight} | MIN = {self.config['min_weight']} | MAX = {self.config['max_weight']}")
+        print(f"WEIGHT = {weight} | THR = {thr_weight * self.weight_factor} | MIN = {self.config['min_weight'] * self.weight_factor} | MAX = {self.config['max_weight'] * self.weight_factor}")
 
         # Determine status
         status_weight = "NORMAL"
-        if weight < self.config["min_weight"]:
+        if weight < self.config["min_weight"] * self.weight_factor:
             status_weight = "UNDERWEIGHT"
-        elif weight > self.config["max_weight"]:
+        elif weight > self.config["max_weight"] * self.weight_factor:
             status_weight = "OVERWEIGHT"
 
         return status_weight
