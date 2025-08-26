@@ -13,6 +13,9 @@ import json
 import time
 from collections import deque
 from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtCore import QUrl
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
 
 CONFIG_FILE = "lib/config.json"
 
@@ -54,6 +57,23 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.EMARK = EMARKPrinter()
         self.WEIGHT = WeightReader()
         self.PLC = PLCReader()
+
+        # --- Add PDF viewer to the Help tab ---
+        # Enable PDF plugins
+        self.pdf_viewer = QWebEngineView()
+        settings = self.pdf_viewer.settings()
+        settings.setAttribute(settings.PluginsEnabled, True)
+        settings.setAttribute(settings.PdfViewerEnabled, True)
+        pdf_path = os.path.abspath("lib\manual.pdf")
+        self.pdf_viewer.load(QUrl.fromLocalFile(pdf_path))
+
+        # Create container widget + layout for PDF
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(self.pdf_viewer)
+
+        # Add as a new tab to your QTabWidget "Help"
+        self.tabWidget.addTab(container, "Help")
    
         self.setup_connections()
 
@@ -75,7 +95,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.sensor_timer.start(1000)
 
     def setup_table(self):
-        self.tableWidget.setColumnCount(6)
+        self.tableWidget.setColumnCount(7)
         self.tableWidget.setHorizontalHeaderLabels([
             "No", "Date", "Time", "Length", "Weight", "Printed Text", "Status"
         ])
@@ -89,8 +109,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)  # Time
         header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
        
         # Set minimum sizes if needed
         header.setMinimumSectionSize(120)  # Minimum width for all columns
@@ -242,7 +263,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 if self.PLC.connected and not self.length_processed:
                     self.length_status.setText("LENGTH : MEASURING")
 
-                if now - self.length_timer >= 2 and not self.length_processed:
+                if now - self.length_timer >= 0.5 and not self.length_processed:
                     if self.length<=0:
                         self.length_status.setText("LENGTH : INVALID")
                     else:
@@ -416,6 +437,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.lineEdit_OD.textChanged.connect(self.update_OD)
         self.lineEdit_WT.textChanged.connect(self.update_WT)
 
+        self.pushButton_savesettings.clicked.connect(self.save_settings)
+
         self.tableWidget_input.cellChanged.connect(self.on_cell_changed)
 
         self.lineEdit_length_min.setText(str(self.config["min_length"]))
@@ -434,30 +457,29 @@ class PrintingSystem(QtWidgets.QMainWindow):
         load_last_csv(self)
 
         # self.highlight_row_by_counter()
+        # self.save_settings()
+        self.pushButton_savesettings.setText("Changes Saved")
+        self.pushButton_savesettings.setStyleSheet("""
+            QPushButton{
+                background-color: rgb(0, 170, 0);
+                border-radius: 10px;
+            }
+            QPushButton:hover{
+                background-color: rgb(0, 190, 0);
+            }
+            QPushButton:pressed{
+                background-color: rgb(0, 210, 0);
+            }
+        """)
     
     def update_length_min(self):
-        try:
-            self.config["min_length"] = float(self.lineEdit_length_min.text())
-            print("Updating min length", self.config["min_length"])
-            self.save_config()
-        except Exception as e:
-            print(e)
+        self.settings_changed()
 
     def update_OD(self):
-        try:
-            self.config["OD"] = float(self.lineEdit_OD.text())
-            print("Updating OD", self.config["OD"])
-            self.save_config()
-        except Exception as e:
-            print(e)
+        self.settings_changed()
 
     def update_WT(self):
-        try:
-            self.config["WT"] = float(self.lineEdit_WT.text())
-            print("Updating WT", self.config["WT"])
-            self.save_config()
-        except Exception as e:
-            print(e)
+        self.settings_changed()
     
     def highlight_row_by_counter(self):    
         row = self.length_counter
@@ -491,22 +513,87 @@ class PrintingSystem(QtWidgets.QMainWindow):
         item = self.tableWidget_home.item(row, 0)
         if item:
             item.setTextAlignment(Qt.AlignCenter)
+    
+    def settings_changed(self):
+        self.pushButton_savesettings.setText("Save Changes")
+        self.pushButton_savesettings.setStyleSheet("""
+            QPushButton{
+                background-color: rgb(255, 170, 0);
+                border-radius: 10px;
+            }
+            QPushButton:hover{
+                background-color: rgb(255, 190, 0);
+            }
+            QPushButton:pressed{
+                background-color: rgb(255, 210, 0);
+            }
+        """)
+    
+    def save_settings(self):
+        reply = QMessageBox.question(
+            self,
+            "Save Settings",
+            f"Are you sure you want to save this settings?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        if reply == QMessageBox.Yes:
+            # Update weight unit
+            self.weight_unit = self.comboBox_weight.currentText().split("(")[1].strip(")")
+            self.lineEdit_weight.setText(f"{self.weight} {self.weight_unit}")
+            self.config["weight_unit"] = self.comboBox_weight.currentText()
+            print(f"Updating Weight Unit to {self.weight_unit}")
+            self.save_config()
+            #Update length unit
+            self.length_unit = self.comboBox_length.currentText().split("(")[1].strip(")")
+            self.lineEdit_length.setText(f"{self.length} {self.length_unit}")
+            self.config["length_unit"] = self.comboBox_length.currentText()
+            print(f"Updating Length Unit to {self.length_unit}")
+            self.save_config()
+            #Update Length Limit
+            try:
+                self.config["min_length"] = float(self.lineEdit_length_min.text())
+                print("Updating min length", self.config["min_length"])
+                self.save_config()
+            except Exception as e:
+                print(e)
+            #Update OD
+            try:
+                self.config["OD"] = float(self.lineEdit_OD.text())
+                print("Updating OD", self.config["OD"])
+                self.save_config()
+            except Exception as e:
+                print(e)
+            #Update WT
+            try:
+                self.config["WT"] = float(self.lineEdit_WT.text())
+                print("Updating WT", self.config["WT"])
+                self.save_config()
+            except Exception as e:
+                print(e)
+            #update Size
+
+            self.pushButton_savesettings.setText("Changes Saved")
+            self.pushButton_savesettings.setStyleSheet("""
+                QPushButton{
+                    background-color: rgb(0, 170, 0);
+                    border-radius: 10px;
+                }
+                QPushButton:hover{
+                    background-color: rgb(0, 190, 0);
+                }
+                QPushButton:pressed{
+                    background-color: rgb(0, 210, 0);
+                }
+            """)
 
     def update_weight_unit(self, text):
         """Update the weight unit based on combo box selection"""
-        self.weight_unit = text.split("(")[1].strip(")")
-        self.lineEdit_weight.setText(f"{self.weight} {self.weight_unit}")
-        self.config["weight_unit"] = text
-        print(f"Updating Weight Unit to {self.weight_unit}")
-        self.save_config()
+        self.settings_changed()
     
     def update_length_unit(self, text):
         """Update the length unit based on combo box selection"""
-        self.length_unit = text.split("(")[1].strip(")")
-        self.lineEdit_length.setText(f"{self.length} {self.length_unit}")
-        self.config["length_unit"] = text
-        print(f"Updating Length Unit to {self.length_unit}")
-        self.save_config()
+        self.settings_changed()
             
     def connect_printer(self):
         if self.EMARK.connected:
@@ -516,6 +603,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
             self.pushButton_connect_1.setStyleSheet("""
                 QPushButton{
                     background-color: rgb(255, 170, 0);
+                    border-radius: 10px;
                 }
                 QPushButton:hover{
                     background-color: rgb(255, 190, 0);
@@ -532,6 +620,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 self.pushButton_connect_1.setStyleSheet("""
                     QPushButton{
                         background-color: rgb(0, 170, 0);
+                        border-radius: 10px;
                     }
                     QPushButton:hover{
                         background-color: rgb(0, 190, 0);
@@ -554,6 +643,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
             self.pushButton_connect_2.setStyleSheet("""
                 QPushButton{
                     background-color: rgb(255, 170, 0);
+                    border-radius: 10px;
                 }
                 QPushButton:hover{
                     background-color: rgb(255, 190, 0);
@@ -570,6 +660,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 self.pushButton_connect_2.setStyleSheet("""
                     QPushButton{
                         background-color: rgb(0, 170, 0);
+                        border-radius: 10px;
                     }
                     QPushButton:hover{
                         background-color: rgb(0, 190, 0);
@@ -596,6 +687,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
             self.pushButton_connect_3.setStyleSheet("""
                 QPushButton{
                     background-color: rgb(255, 170, 0);
+                    border-radius: 10px;
                 }
                 QPushButton:hover{
                     background-color: rgb(255, 190, 0);
@@ -612,6 +704,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 self.pushButton_connect_3.setStyleSheet("""
                     QPushButton{
                         background-color: rgb(0, 170, 0);
+                        border-radius: 10px;
                     }
                     QPushButton:hover{
                         background-color: rgb(0, 190, 0);
@@ -645,6 +738,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
     
     def check_length(self, length):
         # Determine status
+        print(f"Minimum Length: {self.config['min_length']}")
         status_length = "NORMAL"
         if length/1000 < self.config["min_length"] * self.length_factor:
             status_length = "UNDERLENGTH"
@@ -652,6 +746,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         return status_length
     
     def check_weight(self, weight, length):
+        print(f"OD: {self.config['OD']} WT: {self.config['WT']}")
         thr_weight = (self.config["OD"] - self.config["WT"]) * self.config["WT"] * length/1000 / self.length_factor * 0.02466
         self.config["min_weight"] = thr_weight - (thr_weight * 0.035)
         self.config["max_weight"] = thr_weight + (thr_weight * 0.035)
