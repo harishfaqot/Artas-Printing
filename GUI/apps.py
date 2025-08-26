@@ -317,11 +317,12 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
             # WEIGHT sensor
             weight_on = self.PLC.read_bit_I(byte=6, bit=6)
-            if weight_on:
+            weight_on_2 = self.PLC.read_bit_I(byte=10, bit=1)
+            if weight_on and weight_on_2:
                 if self.WEIGHT.connected and not self.weight_processed:
                     self.weight_status.setText("WEIGHT : MEASURING")
 
-                if now - self.weight_timer >= 2  and not self.weight_processed and self.weight_counter<self.length_counter:
+                if now - self.weight_timer >= 0.5  and not self.weight_processed and self.weight_counter<self.length_counter:
                     if self.weight <= 0:
                         self.weight_status.setText("LENGTH : INVALID")
                     else:
