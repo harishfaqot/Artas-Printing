@@ -231,8 +231,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
             # LENGTH sensor
             length_on = self.PLC.read_bit_I(byte=6, bit=5)
-            # length_on_2 = self.PLC.read_bit_Q(byte=1, bit=4)
-            length_on_2 = True
+            length_on_2 = self.PLC.read_bit_Q(byte=1, bit=4)
+            # length_on_2 = True
             if length_on and length_on_2:
                 if self.PLC.connected and not self.length_processed:
                     self.length_status.setText("LENGTH : MEASURING")
