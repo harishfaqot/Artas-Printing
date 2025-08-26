@@ -16,6 +16,12 @@ from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QStyledItemDelegate
+
+class CenterDelegate(QStyledItemDelegate):
+    def initStyleOption(self, option, index):
+        super().initStyleOption(option, index)
+        option.displayAlignment = Qt.AlignCenter
 
 CONFIG_FILE = "lib/config.json"
 
@@ -135,6 +141,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
         header.setDefaultAlignment(Qt.AlignCenter)
         vheader = self.tableWidget_input.verticalHeader()
         vheader.setDefaultAlignment(Qt.AlignCenter)
+
+        self.tableWidget_input.setItemDelegate(CenterDelegate(self.tableWidget_input))
 
         data = [
             "",
@@ -456,20 +464,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         load_last_csv(self)
 
         # self.highlight_row_by_counter()
-        # self.save_settings()
-        self.pushButton_savesettings.setText("Changes Saved")
-        self.pushButton_savesettings.setStyleSheet("""
-            QPushButton{
-                background-color: rgb(0, 170, 0);
-                border-radius: 10px;
-            }
-            QPushButton:hover{
-                background-color: rgb(0, 190, 0);
-            }
-            QPushButton:pressed{
-                background-color: rgb(0, 210, 0);
-            }
-        """)
+        self.load_settings()
     
     def update_length_min(self):
         self.settings_changed()
@@ -585,6 +580,56 @@ class PrintingSystem(QtWidgets.QMainWindow):
                     background-color: rgb(0, 210, 0);
                 }
             """)
+    
+    def load_settings(self):
+        # Update weight unit
+        self.weight_unit = self.comboBox_weight.currentText().split("(")[1].strip(")")
+        self.lineEdit_weight.setText(f"{self.weight} {self.weight_unit}")
+        self.config["weight_unit"] = self.comboBox_weight.currentText()
+        print(f"Updating Weight Unit to {self.weight_unit}")
+        self.save_config()
+        #Update length unit
+        self.length_unit = self.comboBox_length.currentText().split("(")[1].strip(")")
+        self.lineEdit_length.setText(f"{self.length} {self.length_unit}")
+        self.config["length_unit"] = self.comboBox_length.currentText()
+        print(f"Updating Length Unit to {self.length_unit}")
+        self.save_config()
+        #Update Length Limit
+        try:
+            self.config["min_length"] = float(self.lineEdit_length_min.text())
+            print("Updating min length", self.config["min_length"])
+            self.save_config()
+        except Exception as e:
+            print(e)
+        #Update OD
+        try:
+            self.config["OD"] = float(self.lineEdit_OD.text())
+            print("Updating OD", self.config["OD"])
+            self.save_config()
+        except Exception as e:
+            print(e)
+        #Update WT
+        try:
+            self.config["WT"] = float(self.lineEdit_WT.text())
+            print("Updating WT", self.config["WT"])
+            self.save_config()
+        except Exception as e:
+            print(e)
+        #update Size
+
+        self.pushButton_savesettings.setText("Changes Saved")
+        self.pushButton_savesettings.setStyleSheet("""
+            QPushButton{
+                background-color: rgb(0, 170, 0);
+                border-radius: 10px;
+            }
+            QPushButton:hover{
+                background-color: rgb(0, 190, 0);
+            }
+            QPushButton:pressed{
+                background-color: rgb(0, 210, 0);
+            }
+        """)
 
     def update_weight_unit(self, text):
         """Update the weight unit based on combo box selection"""
