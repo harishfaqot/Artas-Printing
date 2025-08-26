@@ -6,7 +6,7 @@ from PyQt5.QtGui import QBrush, QColor
 from lib.EMARK import EMARKPrinter
 from lib.IND231 import WeightReader
 from lib.PLC import PLCReader
-from lib.table import setup_table_functionality, add_to_history, open_file, save_data, export_to_excel, load_last_csv
+from lib.table import setup_table_functionality, add_to_history, open_file, export_to_excel, load_last_csv
 import os
 from PyQt5.QtWidgets import QMessageBox
 import json
@@ -426,7 +426,6 @@ class PrintingSystem(QtWidgets.QMainWindow):
         
         # History tab signals
         self.pushButton_open.clicked.connect(lambda: open_file(self))
-        self.pushButton_save.clicked.connect(lambda: save_data(self))
         self.pushButton_export.clicked.connect(lambda: export_to_excel(self))
         
         # Combo box changes
