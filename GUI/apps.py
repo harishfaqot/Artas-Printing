@@ -77,7 +77,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
     def setup_table(self):
         self.tableWidget.setColumnCount(6)
         self.tableWidget.setHorizontalHeaderLabels([
-            "Date", "Time", "Length", "Weight", "Printed Text", "Status"
+            "No", "Date", "Time", "Length", "Weight", "Printed Text", "Status"
         ])
         self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         
@@ -106,8 +106,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
         vheader = self.tableWidget_home.verticalHeader()
         vheader.setDefaultAlignment(Qt.AlignCenter)
 
-        self.tableWidget_input.setColumnCount(5)
-        self.tableWidget_input.setHorizontalHeaderLabels(["TEXT 1", "TEXT 2", "HEAT NUMBER", "WORK ORDER", "PIPE NUMBER"])
+        self.tableWidget_input.setColumnCount(6)
+        self.tableWidget_input.setHorizontalHeaderLabels(["NO", "TEXT 1", "TEXT 2", "HEAT NUMBER", "WORK ORDER", "PIPE NUMBER"])
         self.tableWidget_input.setRowCount(999)
         header = self.tableWidget_input.horizontalHeader()
         header.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)  # Stretch all columns equally
@@ -116,6 +116,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         vheader.setDefaultAlignment(Qt.AlignCenter)
 
         data = [
+            "",
             "1ST API SPEC 5CT-2221",
             "05-25 PE 7 26.00 K S P 4600 PSI D",
             "HN 241B11000-1",
@@ -206,6 +207,10 @@ class PrintingSystem(QtWidgets.QMainWindow):
             if self.length_unit == "ft":
                 self.length = round(self.length / 304.8, 2)
                 self.length_factor = 1 / 304.8
+
+            if self.length_unit == "m":
+                self.length = round(self.length / 1000, 2)
+                self.length_factor = 1 / 1000
 
             if self.weight_unit == "lbs":
                 self.weight = round(self.weight * 2.20462262, 2)
@@ -478,7 +483,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
             text = item.text() if item else ""
             values.append(text)
 
-        combined_text = f"{values[0]}          {values[1]}    [L]{self.length_unit}    [W]{self.weight_unit}   {values[2]}   {values[3]}   {values[4]}"
+        #Mengubah Space / Spasi
+        combined_text = f"{values[1]}          {values[2]}    [L]{self.length_unit}    [W]{self.weight_unit}   {values[3]}   {values[4]}   {values[5]}"
 
         # Update the first column (Printing Text) of tableWidget_home
         self.tableWidget_home.setItem(row, 0, QtWidgets.QTableWidgetItem(combined_text))
@@ -665,6 +671,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
             output_text = self.tableWidget_home.item(self.printer_counter, 0)
             length_text = self.tableWidget_home.item(self.printer_counter, 1)
             weight_text = self.tableWidget_home.item(self.printer_counter, 2)
+            no = self.tableWidget_input.item(self.printer_counter, 0)
             if output_text:
                 if status == "NORMAL":
                     response = None
@@ -695,7 +702,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                     self.EMARK.clear_text()
 
                 # Add to history (whether printed or rejected)
-                add_to_history(self, length_text.text().replace("\n", " "), weight_text.text().replace("\n", " "), output_text.text(), status)
+                add_to_history(self, no.text(), length_text.text().replace("\n", " "), weight_text.text().replace("\n", " "), output_text.text(), status)
             
         except Exception as e:
             print(e)

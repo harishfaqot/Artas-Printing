@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1500</width>
+    <width>1361</width>
     <height>800</height>
    </rect>
   </property>
@@ -534,7 +534,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </item>
             <item>
              <property name="text">
-              <string>foot (ft)</string>
+              <string>feet (ft)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>meter (m)</string>
              </property>
             </item>
            </widget>
@@ -652,7 +657,7 @@ QPushButton:pressed{
              <string notr="true">border:none;</string>
             </property>
             <property name="text">
-             <string>Length Limit</string>
+             <string>Length Limit (m)</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -685,7 +690,7 @@ QPushButton:pressed{
              <string notr="true">border:none;</string>
             </property>
             <property name="text">
-             <string>Wall Thickness (WT)</string>
+             <string>Wall Thickness (WT) (mm)</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1024,7 +1029,7 @@ QPushButton:pressed{
              <string notr="true">border:none;</string>
             </property>
             <property name="text">
-             <string>Outer Diameter (OD)</string>
+             <string>Outer Diameter (OD) (mm)</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1141,7 +1146,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1500</width>
+     <width>1361</width>
      <height>26</height>
     </rect>
    </property>

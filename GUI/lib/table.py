@@ -97,7 +97,7 @@ def setup_table_functionality(self, table):
     table.delete = delete
     table.keyPressEvent = keyPressEvent
 
-def add_to_history(self, length_text, weight_text, output_text, status):
+def add_to_history(self, no, length_text, weight_text, output_text, status):
     current_time = datetime.datetime.now()
     date_str = current_time.strftime("%Y-%m-%d")
     time_str = current_time.strftime("%H:%M:%S")
@@ -106,6 +106,7 @@ def add_to_history(self, length_text, weight_text, output_text, status):
     self.tableWidget.insertRow(row_position)
     
     for col, value in enumerate([
+        no,
         date_str,
         time_str,
         length_text,
@@ -118,9 +119,9 @@ def add_to_history(self, length_text, weight_text, output_text, status):
         self.tableWidget.setItem(row_position, col, item)
         
     # Save to CSV
-    save_to_csv(date_str, time_str, length_text, weight_text, output_text, status)
+    save_to_csv(no, date_str, time_str, length_text, weight_text, output_text, status)
 
-def save_to_csv(date, time, length_text, weight_text, output_text, status):
+def save_to_csv(no, date, time, length_text, weight_text, output_text, status):
     current_time = datetime.datetime.now()
     date_str = current_time.strftime("%Y-%m-%d")
     csv_file = f"logs/{date_str}.csv"
@@ -133,10 +134,11 @@ def save_to_csv(date, time, length_text, weight_text, output_text, status):
             
             if not file_exists:
                 writer.writerow([
-                    "Date", "Time", "Length", "Weight", "Printed Text", "Status"
+                    "No", "Date", "Time", "Length", "Weight", "Printed Text", "Status"
                     ])
             
             writer.writerow([
+                no,
                 date,
                 time,
                 length_text,
