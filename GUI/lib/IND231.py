@@ -55,7 +55,7 @@ class WeightReader:
                 print("Terminal in underload range.")
             else:
                 print(f"Unknown response: {response}")
-                # return 0
+                return 0
                 # return 573.03
 
             # return response

@@ -227,6 +227,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
             weight_data = self.WEIGHT.read_weight()
             if weight_data:
                 self.weight = round(weight_data,2)
+            else:
+                self.weight = 0
             self.length_factor = 1
             self.weight_factor = 1
 
