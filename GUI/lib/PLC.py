@@ -25,6 +25,7 @@ class PLCReader:
     def read_real(self, db_number, start_byte):
         if not self.client or not self.client.get_connected():
             print("Not connected to PLC.")
+            self.connected = False
             # return -1000
         try:
             data = self.client.db_read(db_number, start_byte, 4)
@@ -32,7 +33,9 @@ class PLCReader:
             # print(f"Value at DB{db_number}.DBD{start_byte}:", value)
             return value
         except Exception as e:
-            print(f"Read error: {e}")
+            print(f"Read Real error: {e}")
+            self.client = False
+            self.connected = False
             return None
     
     def read_bit_I(self, byte, bit):
@@ -45,7 +48,9 @@ class PLCReader:
             print(f"Value at Byte {byte}.{bit}:", value)
             return value
         except Exception as e:
-            print(f"Read error: {e}")
+            print(f"Read bit I error: {e}")
+            self.client = False
+            self.connected = False
             return None
         
     def read_bit_Q(self, byte, bit):
@@ -58,7 +63,9 @@ class PLCReader:
             print(f"Value at Byte {byte}.{bit}:", value)
             return value
         except Exception as e:
-            print(f"Read error: {e}")
+            print(f"Read bit Q error: {e}")
+            self.client = False
+            self.connected = False
             return None
         
     def read_mem(self, byte, bit):
@@ -71,7 +78,9 @@ class PLCReader:
             print(f"Value at Byte {byte}.{bit}:", value)
             return value
         except Exception as e:
-            print(f"Read error: {e}")
+            print(f"Read Memory error: {e}")
+            self.client = False
+            self.connected = False
             return None
 
     def close(self):

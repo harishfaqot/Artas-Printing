@@ -62,8 +62,10 @@ class WeightReader:
 
         except serial.SerialException as e:
             print(f"Serial Weight error: {e}")
+            self.connected = False
         except Exception as e:
             print(f"Error: {e}")
+            self.connected = False
 
 
     def close(self):
