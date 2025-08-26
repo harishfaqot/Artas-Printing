@@ -96,6 +96,24 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
         self.comboBox_font.setCurrentIndex(3)
 
+        self.tableWidget_input.cellChanged.connect(self.on_cell_changed)
+        data = [
+            "",
+            "1ST API SPEC 5CT-2221",
+            "05-25 PE 7 26.00 K S P 4600 PSI D",
+            "HN 241B11000-1",
+            "WO 04-0475",
+            ""  # Empty pipe number
+        ]
+
+        for i in range(0):
+            for col, text in enumerate(data):
+                item = QTableWidgetItem(text)
+                item.setTextAlignment(Qt.AlignCenter)
+                self.tableWidget_input.setItem(i, col, item)
+        # Apply copy-paste functionality
+        setup_table_functionality(self, self.tableWidget_input)
+
         # Start polling
         self.sensor_timer = QTimer()
         self.sensor_timer.timeout.connect(self.poll_sensors)
@@ -144,24 +162,6 @@ class PrintingSystem(QtWidgets.QMainWindow):
         vheader.setDefaultAlignment(Qt.AlignCenter)
 
         self.tableWidget_input.setItemDelegate(CenterDelegate(self.tableWidget_input))
-
-        data = [
-            "",
-            "1ST API SPEC 5CT-2221",
-            "05-25 PE 7 26.00 K S P 4600 PSI D",
-            "HN 241B11000-1",
-            "WO 04-0475",
-            ""  # Empty pipe number
-        ]
-
-        for i in range(3):
-            for col, text in enumerate(data):
-                item = QTableWidgetItem(text)
-                item.setTextAlignment(Qt.AlignCenter)
-                self.tableWidget_input.setItem(i, col, item)
-
-        # Apply copy-paste functionality
-        setup_table_functionality(self, self.tableWidget_input)
 
     def load_config(self):
         if os.path.exists(CONFIG_FILE):
@@ -458,8 +458,6 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.lineEdit_WT.textChanged.connect(self.update_WT)
 
         self.pushButton_savesettings.clicked.connect(self.save_settings)
-
-        self.tableWidget_input.cellChanged.connect(self.on_cell_changed)
 
         self.lineEdit_length_min.setText(str(self.config["min_length"]))
         self.lineEdit_OD.setText(str(self.config["OD"]))
