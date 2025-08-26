@@ -1,1 +1,1 @@
-{"printer_port": "COM3", "weight_port": "COM6", "plc_ip": "192.168.0.97", "min_length": 11.51, "OD": 177.8, "WT": 10.36, "min_weight": 502.46968276365715, "max_weight": 538.9182607879638, "length_unit": "foot (ft)", "weight_unit": "kilogram (kg)"}
+{"printer_port": "COM3", "weight_port": "COM6", "plc_ip": "192.168.0.97", "min_length": 11.51, "OD": 177.8, "WT": 10.36, "min_weight": 524.6750033745083, "max_weight": 562.7343300441618, "length_unit": "feet (ft)", "weight_unit": "pound (lbs)"}

@@ -484,7 +484,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
             values.append(text)
 
         #Mengubah Space / Spasi
-        combined_text = f"{values[1]}          {values[2]}    [L]{self.length_unit}    [W]{self.weight_unit}   {values[3]}   {values[4]}   {values[5]}"
+        combined_text = f"{values[1]}      {values[2]}  [L]{self.length_unit}  [W]{self.weight_unit}  {values[3]}  {values[4]}  {values[5]}"
 
         # Update the first column (Printing Text) of tableWidget_home
         self.tableWidget_home.setItem(row, 0, QtWidgets.QTableWidgetItem(combined_text))
