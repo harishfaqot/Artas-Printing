@@ -61,7 +61,7 @@ class WeightReader:
             # return response
 
         except serial.SerialException as e:
-            print(f"Serial error: {e}")
+            print(f"Serial Weight error: {e}")
         except Exception as e:
             print(f"Error: {e}")
 
