@@ -27,7 +27,7 @@ class WeightReader:
     def read_weight(self):
         if not hasattr(self, 'serial'):
             print("Serial port not available.")
-            return -1000
+            return 0
             # return 501.33
 
         try:
@@ -55,7 +55,7 @@ class WeightReader:
                 print("Terminal in underload range.")
             else:
                 print(f"Unknown response: {response}")
-                return -1000
+                # return 0
                 # return 573.03
 
             # return response

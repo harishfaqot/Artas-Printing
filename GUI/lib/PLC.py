@@ -25,7 +25,7 @@ class PLCReader:
     def read_real(self, db_number, start_byte):
         if not self.client or not self.client.get_connected():
             print("Not connected to PLC.")
-            return -1000
+            # return -1000
         try:
             data = self.client.db_read(db_number, start_byte, 4)
             value = get_real(data, 0)
