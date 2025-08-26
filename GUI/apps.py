@@ -57,6 +57,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.printer_processed = False
         self.length_processed = False
         self.weight_processed = False
+        self.ip_address = None
 
         self.pipe_queue = deque()
 
@@ -228,8 +229,14 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
     def poll_sensors(self):
         try:
-            self.length = round(self.PLC.read_real(db_number=2, start_byte=0), 2)
-            self.weight = round(self.WEIGHT.read_weight(),2)
+            length_data = self.PLC.read_real(db_number=2, start_byte=0)
+            if length_data:
+                self.length = round(length_data, 2)
+            weight_data = self.WEIGHT.read_weight()
+            if weight_data:
+                self.weight = round(weight_data,2)
+            else:
+                self.weight = 0
             self.length_factor = 1
             self.weight_factor = 1
 
@@ -320,16 +327,19 @@ class PrintingSystem(QtWidgets.QMainWindow):
                         border-radius: 5px;
                         border: none;
                     """)
+                    msg = self.PLC.connect(ip= self.ip_address)
+                    print(msg)
                 self.length_timer = now
                 self.length_processed = False
 
             # WEIGHT sensor
             weight_on = self.PLC.read_bit_I(byte=6, bit=6)
-            if weight_on:
+            weight_on_2 = self.PLC.read_bit_I(byte=10, bit=1)
+            if weight_on and weight_on_2:
                 if self.WEIGHT.connected and not self.weight_processed:
                     self.weight_status.setText("WEIGHT : MEASURING")
 
-                if now - self.weight_timer >= 2  and not self.weight_processed and self.weight_counter<self.length_counter:
+                if now - self.weight_timer >= 0.5  and not self.weight_processed and self.weight_counter<self.length_counter:
                     if self.weight <= 0:
                         self.weight_status.setText("LENGTH : INVALID")
                     else:
@@ -389,6 +399,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
                         border-radius: 5px;
                         border: none;
                     """)
+                    port = self.comboBox_com_2.currentText().split()[0]
+                    msg = self.WEIGHT.connect(port= port)
+                    print(msg)
                 self.weight_timer = now
                 self.weight_processed = False
             
@@ -741,8 +754,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 }
             """)
         else:
-            ip_address = self.lineEdit_IP.text()
-            msg = self.PLC.connect(ip= ip_address)
+            self.ip_address = self.lineEdit_IP.text()
+            msg = self.PLC.connect(ip= self.ip_address)
             if self.PLC.connected:
                 self.pushButton_connect_3.setText("Connected")
                 self.pushButton_connect_3.setStyleSheet("""
@@ -764,7 +777,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
                     border: none;
                 """)
 
-                self.config["plc_ip"] = ip_address
+                self.config["plc_ip"] = self.ip_address
                 self.save_config()
             else:
                 QMessageBox.critical(self, "Connection Failed", msg)
