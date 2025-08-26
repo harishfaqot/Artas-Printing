@@ -75,7 +75,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.sensor_timer.start(1000)
 
     def setup_table(self):
-        self.tableWidget.setColumnCount(6)
+        self.tableWidget.setColumnCount(7)
         self.tableWidget.setHorizontalHeaderLabels([
             "No", "Date", "Time", "Length", "Weight", "Printed Text", "Status"
         ])
@@ -89,8 +89,9 @@ class PrintingSystem(QtWidgets.QMainWindow):
         header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)  # Time
         header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
         header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(6, QtWidgets.QHeaderView.ResizeToContents)
        
         # Set minimum sizes if needed
         header.setMinimumSectionSize(120)  # Minimum width for all columns
