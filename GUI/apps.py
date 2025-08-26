@@ -13,6 +13,9 @@ import json
 import time
 from collections import deque
 from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtCore import QUrl
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
 
 CONFIG_FILE = "lib/config.json"
 
@@ -54,6 +57,23 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.EMARK = EMARKPrinter()
         self.WEIGHT = WeightReader()
         self.PLC = PLCReader()
+
+        # --- Add PDF viewer to the Help tab ---
+        # Enable PDF plugins
+        self.pdf_viewer = QWebEngineView()
+        settings = self.pdf_viewer.settings()
+        settings.setAttribute(settings.PluginsEnabled, True)
+        settings.setAttribute(settings.PdfViewerEnabled, True)
+        pdf_path = os.path.abspath("lib\manual.pdf")
+        self.pdf_viewer.load(QUrl.fromLocalFile(pdf_path))
+
+        # Create container widget + layout for PDF
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.addWidget(self.pdf_viewer)
+
+        # Add as a new tab to your QTabWidget "Help"
+        self.tabWidget.addTab(container, "Help")
    
         self.setup_connections()
 
