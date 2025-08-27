@@ -272,7 +272,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
             # LENGTH sensor
             length_on = self.PLC.read_bit_I(byte=6, bit=5)
-            length_on_2 = self.PLC.read_bit_I(byte=10, bit=4)
+            length_on_2 = self.PLC.read_bit_I(byte=10, bit=1)
             # length_on_2 = True
             if length_on and length_on_2:
                 if self.PLC.connected and not self.length_processed:
@@ -334,7 +334,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
 
             # WEIGHT sensor
             weight_on = self.PLC.read_bit_I(byte=6, bit=6)
-            weight_on_2 = self.PLC.read_bit_I(byte=10, bit=1)
+            weight_on_2 = self.PLC.read_bit_I(byte=10, bit=4)
             if weight_on and weight_on_2:
                 if self.WEIGHT.connected and not self.weight_processed:
                     self.weight_status.setText("WEIGHT : MEASURING")
