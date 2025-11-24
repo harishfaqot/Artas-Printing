@@ -38,6 +38,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         # Initialize variables
         self.weight_unit = "kg"
         self.length_unit = "mm"
+        self.pipe_type = "5CT"
         self.weight_factor = 0
         self.length_factor = 0
         self.weight = 0
@@ -144,7 +145,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         self.tableWidget_home.setColumnCount(4)
         self.tableWidget_home.setHorizontalHeaderLabels(["Printing Text", "Length", "Weight", "Status Print"])
         self.tableWidget_home.setRowCount(5000)
-        self.tableWidget_home.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        # self.tableWidget_home.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         header = self.tableWidget_home.horizontalHeader()
         header.setSectionResizeMode(QtWidgets.QHeaderView.Stretch)  # Stretch all columns equally
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
@@ -177,7 +178,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
                     "OD": 0,
                     "WT": 0,
                     "length_unit": "kilogram (kg)",
-                    "weight_unit": "milimeter (mm)"
+                    "weight_unit": "milimeter (mm)",
+                    "pipe_type": "5CT"
                 }
         else:
             return {
@@ -188,7 +190,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
                 "OD": 0,
                 "WT": 0,
                 "length_unit": "kilogram (kg)",
-                "weight_unit": "milimeter (mm)"
+                "weight_unit": "milimeter (mm)",
+                "pipe_type": "5CT"
             }
 
     def save_config(self):
@@ -407,7 +410,8 @@ class PrintingSystem(QtWidgets.QMainWindow):
             
             # WEIGHT sensor
             printer_on = self.PLC.read_bit_I(byte=6, bit=4)
-            if printer_on:
+            printer_on_2 = self.PLC.read_bit_I(byte=8, bit=2)
+            if printer_on or printer_on_2:
                 length_text = self.tableWidget_home.item(self.printer_counter, 1)
                 weight_text = self.tableWidget_home.item(self.printer_counter, 2)
 
@@ -452,6 +456,7 @@ class PrintingSystem(QtWidgets.QMainWindow):
         # Combo box changes
         self.comboBox_weight.currentTextChanged.connect(self.update_weight_unit)
         self.comboBox_length.currentTextChanged.connect(self.update_length_unit)
+        self.comboBox_type.currentTextChanged.connect(self.update_type_pipe)
 
         self.lineEdit_length_min.textChanged.connect(self.update_length_min)
         self.lineEdit_OD.textChanged.connect(self.update_OD)
@@ -555,6 +560,10 @@ class PrintingSystem(QtWidgets.QMainWindow):
             self.config["length_unit"] = self.comboBox_length.currentText()
             print(f"Updating Length Unit to {self.length_unit}")
             self.save_config()
+            #Update Pipe Type
+            self.pipe_type = self.comboBox_type.currentText()
+            self.config["pipe_type"] = self.comboBox_type.currentText()
+            print(f"Updating Pipe Type Unit to {self.pipe_type}")
             #Update Length Limit
             try:
                 self.config["min_length"] = float(self.lineEdit_length_min.text())
@@ -648,6 +657,10 @@ class PrintingSystem(QtWidgets.QMainWindow):
     
     def update_length_unit(self, text):
         """Update the length unit based on combo box selection"""
+        self.settings_changed()
+    
+    def update_type_pipe(self, text):
+        """Update the pipe type based on combo box selection"""
         self.settings_changed()
             
     def connect_printer(self):
@@ -803,8 +816,15 @@ class PrintingSystem(QtWidgets.QMainWindow):
     def check_weight(self, weight, length):
         print(f"OD: {self.config['OD']} WT: {self.config['WT']}")
         thr_weight = (self.config["OD"] - self.config["WT"]) * self.config["WT"] * length/1000 / self.length_factor * 0.02466
-        self.config["min_weight"] = thr_weight - (thr_weight * 0.035)
-        self.config["max_weight"] = thr_weight + (thr_weight * 0.035)
+        if self.pipe_type == "5CT":
+            self.config["min_weight"] = thr_weight - (thr_weight * 0.035)
+            self.config["max_weight"] = thr_weight + (thr_weight * 0.06)
+        elif self.pipe_type == "5L":
+            self.config["min_weight"] = thr_weight - (thr_weight * 0.035)
+            self.config["max_weight"] = thr_weight + (thr_weight * 0.1)
+        else:
+            print("Failed to choose pipe type!")
+
         print(f"WEIGHT = {weight} | THR = {thr_weight * self.weight_factor} | MIN = {self.config['min_weight'] * self.weight_factor} | MAX = {self.config['max_weight'] * self.weight_factor}")
 
         # Determine status
